@@ -106,7 +106,7 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
         private static int GenerateFilePairs(string databaseConnectionString, string categoryName, object subcategoryName, object filter, string bcpArguments, string bcpServerName, string queryOutputDir)
         {
             SqlConnection DBConn = new SqlConnection(databaseConnectionString);
-            SqlCommand GenerateComparisonFiles = new SqlCommand("apQCompCompareQueryOutput", DBConn);
+            SqlCommand GenerateComparisonFiles = new SqlCommand("CreateQueryOutput", DBConn);
             GenerateComparisonFiles.CommandTimeout = Convert.ToInt32(ConfigurationManager.AppSettings["QueryTimeout"]);
             GenerateComparisonFiles.CommandType = CommandType.StoredProcedure;
 
@@ -142,7 +142,7 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
         private static void CompareFilePairs(string databaseConnectionString, string compareExePath, string compareSwitches)
         {
             SqlConnection DBConn = new SqlConnection(databaseConnectionString);
-            SqlCommand GetFilePairs = new SqlCommand("apQCompGetFilePairs", DBConn);
+            SqlCommand GetFilePairs = new SqlCommand("GetFilePairs", DBConn);
             GetFilePairs.CommandType = CommandType.StoredProcedure;
             DBConn.Open();
             SqlDataReader FilePairs = GetFilePairs.ExecuteReader();
