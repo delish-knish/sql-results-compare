@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace InfoCo.SQL.Test.SQLResultsCompare.Properties {
+namespace InfoCo.SQL.Test.SqlResultsCompare.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,16 +20,6 @@ namespace InfoCo.SQL.Test.SQLResultsCompare.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.\\GWlocaldb;Initial Catalog=EDWMaster;Integrated Security=True")]
-        public string EDWMasterConnectionString {
-            get {
-                return ((string)(this["EDWMasterConnectionString"]));
             }
         }
     }

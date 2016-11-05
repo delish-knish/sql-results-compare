@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Query] (
     [QueryId]          INT            IDENTITY (1, 1) NOT NULL,
-    [RemoteServerId]   INT            NOT NULL,
+    [RemoteServerId]   INT            NULL,
     [QueryName]        NVARCHAR (50)  NOT NULL,
     [QueryDescription] NVARCHAR (255) NOT NULL,
     [Query]            NVARCHAR (MAX) NOT NULL,

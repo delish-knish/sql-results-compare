@@ -3,11 +3,11 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
-namespace InfoCo.SQL.Test.SQLResultsCompare
+namespace InfoCo.SQL.Test.SqlResultsCompare
 {
     class Options
     {
-        [Option('c', "category", Required = true, HelpText = "Query category (e.g. Policy).")]
+        [Option('c', "category", HelpText = "Query category (e.g. Policy).")]
         public string QueryCategory { get; set; }
 
         [Option('s', "subcategory", HelpText = "Query subcategory (e.g. Premium, GL).")]
@@ -28,13 +28,16 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
         [Option('d', DefaultValue = true, HelpText = "Delete existing output files.")]
         public bool DeleteExisting { get; set; }
 
+        [Option('i', DefaultValue = false, HelpText = "Create the SqlResultsCompare database.")]
+        public bool CreateDatabase { get; set; }
+
         [HelpOption]
         public string GetUsage()
         {
             var help = new HelpText
             {
                 Heading = new HeadingInfo("SQL Results Compare", "v0.1"),
-                Copyright = new CopyrightInfo("Information Collaboration", 2016),
+                Copyright = new CopyrightInfo("Information Collaboration LLC", 2016),
                 AdditionalNewLineAfterOption = true,
                 AddDashesToOption = true
             };

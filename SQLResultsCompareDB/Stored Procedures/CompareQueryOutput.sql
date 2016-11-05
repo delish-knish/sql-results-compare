@@ -135,22 +135,31 @@ AS
                 EXEC master.dbo.sp_executesql
                   @TempTableStructureSQL;
 
-				--TODO: Enhance to be able to skip the linked server/temp table process if the target query server is a SQL Server by executing the query directly through BCP.
+				IF @ServerDataSource IS NOT NULL
+				BEGIN
+					IF EXISTS (SELECT 1 FROM sys.servers WHERE name = 'TempCompare')
+						EXEC master.dbo.sp_dropserver @server=N'TempCompare', @droplogins='droplogins';
+					
+					--Create the temp linked server
+					DECLARE @TempLinkedServerName NVARCHAR(100) = N'TempCompare';
 
-                --Create the temp linked server
-                DECLARE @TempLinkedServerName NVARCHAR(100) = N'TempCompare';
+					EXEC master.dbo.sp_addlinkedserver @server = @TempLinkedServerName, @srvproduct=N'', @provider=@ServerProviderName, @datasrc=@ServerDataSource, @provstr=@ServerProviderString;
+					EXEC master.dbo.sp_serveroption @server=N'TempCompare', @optname=N'rpc', @optvalue=N'true';
+					EXEC master.dbo.sp_serveroption @server=N'TempCompare', @optname=N'rpc out', @optvalue=N'true';
 
-                EXEC master.dbo.sp_addlinkedserver @server = @TempLinkedServerName, @srvproduct=N'', @provider=@ServerProviderName, @datasrc=@ServerDataSource, @provstr=@ServerProviderString;
-                EXEC master.dbo.sp_serveroption @server=N'TempCompare', @optname=N'rpc', @optvalue=N'true';
-                EXEC master.dbo.sp_serveroption @server=N'TempCompare', @optname=N'rpc out', @optvalue=N'true';
+					IF @ServerUsername IS NOT NULL
+					  EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname=@TempLinkedServerName, @useself=N'False', @locallogin=NULL, @rmtuser=@ServerUsername, @rmtpassword=@ServerPassword;
 
-                IF @ServerUsername IS NOT NULL
-                  EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname=@TempLinkedServerName, @useself=N'False', @locallogin=NULL, @rmtuser=@ServerUsername, @rmtpassword=@ServerPassword;
+					INSERT INTO ##Temp
+					EXEC (@SQLStatement) AT TempCompare;
 
-                INSERT INTO ##Temp
-                EXEC (@SQLStatement) AT TempCompare;
-
-                EXEC master.dbo.SP_DROPSERVER @server=N'TempCompare', @droplogins='droplogins';
+					EXEC master.dbo.sp_dropserver @server=N'TempCompare', @droplogins='droplogins';
+				END
+				ELSE
+				BEGIN
+					INSERT INTO ##Temp
+					EXEC (@SQLStatement);
+				END
 
                 DECLARE @BCPCommand VARCHAR(8000);
 

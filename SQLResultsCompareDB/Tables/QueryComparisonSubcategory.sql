@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[QueryComparisonSubcategory] (
-    [QueryComparisonSubcategoryId]          INT           NOT NULL,
+    [QueryComparisonSubcategoryId]          INT  IDENTITY(1,1)         NOT NULL,
     [EnabledInd]                            BIT           CONSTRAINT [DF_QueryComparisonSubcategory_EnabledInd] DEFAULT ((1)) NOT NULL,
     [QueryComparisonSubcategoryName]        VARCHAR (50)  NOT NULL,
     [QueryComparisonSubcategoryDescription] VARCHAR (255) NOT NULL,

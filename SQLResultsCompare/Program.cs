@@ -6,12 +6,16 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using CommandLine;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Dac;
+using System.Collections.Generic;
 
-namespace InfoCo.SQL.Test.SQLResultsCompare
+namespace InfoCo.SQL.Test.SqlResultsCompare
 {
     class Program
     {
-        private static string ArgQueryCategory { get; set; }
+        private static object ArgQueryCategory { get; set; }
         private static object ArgQuerySubcategory { get; set; }
         private static object ArgQueryFilter { get; set; }
         private static string ArgBCPArguments { get; set; }
@@ -19,16 +23,21 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
         private static string ArgCompareSwitches { get; set; }
         private static string ArgQueryOutputDir { get; set; }
         private static bool ArgDeleteExisting { get; set; }
+        private static bool ArgCreateDatabase { get; set; }
+        private static List<string> MessageList { get; set; }
 
         static void Main(string[] args)
         {
             try
             {
+                
                 var options = new Options();
                 if (CommandLine.Parser.Default.ParseArguments(args, options))
                 {
+                    options.CreateDatabase = true;
+
                     //Determine final argument values for process
-                    ArgQueryCategory = options.QueryCategory;
+                    ArgQueryCategory = (options.QueryCategory != null) ? (object)options.QueryCategory : DBNull.Value;
                     ArgQuerySubcategory = (options.QuerySubcategory != null) ? (object)options.QuerySubcategory : DBNull.Value;
                     ArgQueryFilter = (options.QueryFilter != null) ? (object)options.QueryFilter : DBNull.Value;
                     ArgBCPArguments = (options.BCPArguments != null ? options.BCPArguments : ConfigurationManager.AppSettings["DefaultBCPArguments"]);
@@ -36,6 +45,7 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
                     ArgCompareSwitches = (options.CompareSwitches != null ? options.CompareSwitches : ConfigurationManager.AppSettings["DefaultCompareSwitches"]);
                     ArgQueryOutputDir = (options.QueryOutputDir != null ? options.QueryOutputDir : ConfigurationManager.AppSettings["DefaultQueryOutputDir"]);
                     ArgDeleteExisting = options.DeleteExisting;
+                    ArgCreateDatabase = options.CreateDatabase;
 
                     //Set up connection string
                     string dbConnString = ConfigurationManager.ConnectionStrings["DBConnectionString"].ToString();
@@ -43,6 +53,15 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
                     //Get the servername
                     SqlConnectionStringBuilder connStringBuilder = new SqlConnectionStringBuilder(dbConnString);
                     string serverName = connStringBuilder.DataSource;
+
+                    if (ArgCreateDatabase == true)
+                    {
+                        bool deploySuccess = DeployDatabase(serverName, dbConnString);
+                        string deployMessage;
+                        deployMessage = (deploySuccess == true ? "SqlResultsCompare database deployed successfully on " + serverName + "." : "SqlResultsCompare database deployment failed on " + serverName + ".");
+                        Console.WriteLine("SqlResultsCompare database deployed successfully to " + serverName + ".");
+                        return;
+                    }
 
                     //Display all values being used to run the process
                     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -62,6 +81,9 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Process started ...\r\n");
                     Console.ResetColor();
+
+                    //Create directory if it doesn't exist
+                    System.IO.Directory.CreateDirectory(ArgQueryOutputDir);
 
                     //If enabled, delete exsiting query output files
                     if (ArgDeleteExisting)
@@ -103,10 +125,10 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
             }
         }
 
-        private static int GenerateFilePairs(string databaseConnectionString, string categoryName, object subcategoryName, object filter, string bcpArguments, string bcpServerName, string queryOutputDir)
+        private static int GenerateFilePairs(string databaseConnectionString, object categoryName, object subcategoryName, object filter, string bcpArguments, string bcpServerName, string queryOutputDir)
         {
             SqlConnection DBConn = new SqlConnection(databaseConnectionString);
-            SqlCommand GenerateComparisonFiles = new SqlCommand("CreateQueryOutput", DBConn);
+            SqlCommand GenerateComparisonFiles = new SqlCommand("SqlResultsCompare.dbo.CreateQueryOutput", DBConn);
             GenerateComparisonFiles.CommandTimeout = Convert.ToInt32(ConfigurationManager.AppSettings["QueryTimeout"]);
             GenerateComparisonFiles.CommandType = CommandType.StoredProcedure;
 
@@ -142,7 +164,7 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
         private static void CompareFilePairs(string databaseConnectionString, string compareExePath, string compareSwitches)
         {
             SqlConnection DBConn = new SqlConnection(databaseConnectionString);
-            SqlCommand GetFilePairs = new SqlCommand("GetFilePairs", DBConn);
+            SqlCommand GetFilePairs = new SqlCommand("SqlResultsCompare.dbo.GetFilePairs", DBConn);
             GetFilePairs.CommandType = CommandType.StoredProcedure;
             DBConn.Open();
             SqlDataReader FilePairs = GetFilePairs.ExecuteReader();
@@ -180,6 +202,30 @@ namespace InfoCo.SQL.Test.SQLResultsCompare
                 fileCount += 1;
             }
             return fileCount;
+        }
+
+        private static bool DeployDatabase(string databaseServerName, string connString)
+        {
+            MessageList = new List<string>();
+            bool success = true;
+            var dacSvc = new DacServices(connString);
+            var dacOptions = new DacDeployOptions();
+            dacOptions.BlockOnPossibleDataLoss = false;
+
+            try
+            {
+                using (DacPackage dacpac = DacPackage.Load(@"Database Deployment\SqlResultsCompare.dacpac"))
+                {
+                    dacSvc.Deploy(dacpac, "SqlResultsCompare", upgradeExisting: true, options: dacOptions);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                MessageList.Add(ex.Message);
+            }
+            return success;
         }
     }
 }
