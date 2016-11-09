@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLResultsCompare", "SQLResultsCompare\SQLResultsCompare.csproj", "{78A0A8B4-0BDC-476D-81D1-733BCD44081E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlResultsCompare", "SqlResultsCompare\SqlResultsCompare.csproj", "{78A0A8B4-0BDC-476D-81D1-733BCD44081E}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SQLResultsCompareDB", "SQLResultsCompareDB\SQLResultsCompareDB.sqlproj", "{DF2A1B46-7A2B-4DA2-AC48-7176327631C0}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlResultsCompareDb", "SqlResultsCompareDB\SqlResultsCompareDb.sqlproj", "{DF2A1B46-7A2B-4DA2-AC48-7176327631C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

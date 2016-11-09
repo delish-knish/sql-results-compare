@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CreateQueryOutput] @QueryComparisonCategoryName    VARCHAR(50),
+﻿CREATE PROCEDURE [dbo].[CreateQueryOutput] @QueryComparisonCategoryName    VARCHAR(50) = NULL,
                                                   @QueryComparisonSubcategoryName VARCHAR(50) = NULL,--leave NULL if all subcategories are to be included
                                                   @QueryFilter                    VARCHAR(MAX),
                                                   @BCPArguments                   VARCHAR(1000) = '-t , -c -T',
@@ -67,13 +67,11 @@ AS
                ON qc.ComparisonQueryId = cq.QueryId
              LEFT JOIN [dbo].[RemoteServer] cqrs
                     ON cq.RemoteServerId = cqrs.RemoteServerId
-      WHERE  ( qcc.QueryComparisonCategoryName = @QueryComparisonCategoryName
+      WHERE  ( (qcc.QueryComparisonCategoryName = @QueryComparisonCategoryName AND qcc.EnabledInd = 1)
                 OR @QueryComparisonCategoryName IS NULL )
-             AND ( qcs.QueryComparisonSubcategoryName = @QueryComparisonSubcategoryName
+             AND ( (qcs.QueryComparisonSubcategoryName = @QueryComparisonSubcategoryName AND qcs.EnabledInd = 1)
                     OR @QueryComparisonSubcategoryName IS NULL )
-             AND qc.EnabledInd = 1
-             AND qcc.EnabledInd = 1
-             AND qcs.EnabledInd = 1;
+             AND qc.EnabledInd = 1 ;
 
     OPEN ComparisonCursor;
 

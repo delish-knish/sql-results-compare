@@ -11,7 +11,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Dac;
 using System.Collections.Generic;
 
-namespace InfoCo.SQL.Test.SqlResultsCompare
+namespace InfoCo.Sql.Test.SqlResultsCompare
 {
     class Program
     {
@@ -29,13 +29,10 @@ namespace InfoCo.SQL.Test.SqlResultsCompare
         static void Main(string[] args)
         {
             try
-            {
-                
+            {                
                 var options = new Options();
                 if (CommandLine.Parser.Default.ParseArguments(args, options))
                 {
-                    options.CreateDatabase = true;
-
                     //Determine final argument values for process
                     ArgQueryCategory = (options.QueryCategory != null) ? (object)options.QueryCategory : DBNull.Value;
                     ArgQuerySubcategory = (options.QuerySubcategory != null) ? (object)options.QuerySubcategory : DBNull.Value;
@@ -65,8 +62,8 @@ namespace InfoCo.SQL.Test.SqlResultsCompare
 
                     //Display all values being used to run the process
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("Query Category: " + ArgQueryCategory);
-                    Console.WriteLine("Query Subcategory: " + (ArgQuerySubcategory.ToString() != string.Empty ? ArgQuerySubcategory : "[none provided]"));
+                    Console.WriteLine("Query Category: " + ArgQueryCategory.ToString());
+                    Console.WriteLine("Query Subcategory: " + ArgQuerySubcategory.ToString());
                     Console.WriteLine("Query Filter: " + ArgQueryFilter);
                     Console.WriteLine("BCP Arguments: " + ArgBCPArguments);
                     Console.WriteLine("SQL Server: " + serverName);
@@ -95,7 +92,7 @@ namespace InfoCo.SQL.Test.SqlResultsCompare
 
                     //Generate output files to compare
                     Console.WriteLine("\tFile generation started...");
-                    Console.WriteLine("\t\t" + GenerateFilePairs(dbConnString, ArgQueryCategory.ToString(), ArgQuerySubcategory, ArgQueryFilter, ArgBCPArguments, serverName, ArgQueryOutputDir) + " set(s) of comparison files created.");
+                    Console.WriteLine("\t\t" + GenerateFilePairs(dbConnString, ArgQueryCategory, ArgQuerySubcategory, ArgQueryFilter, ArgBCPArguments, serverName, ArgQueryOutputDir) + " set(s) of comparison files created.");
                     Console.WriteLine("\tFile generation complete.\r\n");
 
                     //Compare output files

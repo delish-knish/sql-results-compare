@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace InfoCo.SQL.Test.SqlResultsCompare.Properties {
+namespace InfoCo.Sql.Test.SqlResultsCompare.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

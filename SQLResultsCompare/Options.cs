@@ -3,7 +3,7 @@ using System.Text;
 using CommandLine;
 using CommandLine.Text;
 
-namespace InfoCo.SQL.Test.SqlResultsCompare
+namespace InfoCo.Sql.Test.SqlResultsCompare
 {
     class Options
     {

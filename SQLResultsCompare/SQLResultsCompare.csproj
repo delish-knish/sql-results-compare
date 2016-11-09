@@ -7,7 +7,7 @@
     <ProjectGuid>{78A0A8B4-0BDC-476D-81D1-733BCD44081E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfoCo.SQL.Test.SqlResultsCompare</RootNamespace>
+    <RootNamespace>InfoCo.Sql.Test.SqlResultsCompare</RootNamespace>
     <AssemblyName>SqlResultsCompare</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>InfoCo.SQL.Test.SqlResultsCompare.Program</StartupObject>
+    <StartupObject>InfoCo.Sql.Test.SqlResultsCompare.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>BAF7668B819E0FF95ED072EB8494B06718921FB3</ManifestCertificateThumbprint>
