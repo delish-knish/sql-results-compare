@@ -119,8 +119,7 @@ AS
 
                 --Create SQL statement to be executed
                 DECLARE @SQLStatement NVARCHAR(MAX) = ( @SQLOuterSELECT + ' FROM (' + @Query + ') t '
-                    + @SQLOuterWHERE + ' ORDER BY '
-                    + @ORDERBYColumns );
+                    + @SQLOuterWHERE );
 
                 --Drop temp table if it already exists
                 IF OBJECT_ID('tempdb.dbo.##Temp') IS NOT NULL
@@ -161,7 +160,7 @@ AS
 
                 DECLARE @BCPCommand VARCHAR(8000);
 
-                SET @BCPCommand = 'bcp "SELECT * FROM ##Temp'
+                SET @BCPCommand = 'bcp "SELECT * FROM ##Temp ORDER BY ' + @ORDERBYColumns
                                   + '" queryout "' + @QueryOutputDir + @FileName
                                   + '" ' + @BCPArguments + ' -S ' + @BCPServerName
 

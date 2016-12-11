@@ -168,12 +168,12 @@ namespace InfoCo.Sql.Test.SqlResultsCompare
 
             if(FilePairs.HasRows)
             {
-                while(FilePairs.Read())
+                var comparisonCounter = 1;
+                while (FilePairs.Read())
                 {
                     var baselineFilePath = FilePairs.GetValue(0);
                     var comparisonFilePath = FilePairs.GetValue(1);
-                    var comparisonDescription = FilePairs.GetValue(2);
-                    var comparisonCounter = 1;
+                    var comparisonDescription = FilePairs.GetValue(2);                    
                    
                     Process.Start(compareExePath, compareSwitches + " " + baselineFilePath + " " + comparisonFilePath);
                     Console.WriteLine("\t\tComparision #" + comparisonCounter.ToString() + ": \"" + comparisonDescription + "\" complete.");
