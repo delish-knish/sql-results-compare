@@ -83,7 +83,7 @@ namespace InfoCo.Sql.Test.SqlResultsCompare
                     System.IO.Directory.CreateDirectory(ArgQueryOutputDir);
 
                     //If enabled, delete exsiting query output files
-                    if (ArgDeleteExisting)
+                    if (ArgDeleteExisting == true)
                     {
                         Console.WriteLine("\tDirectory cleanup started...");
                         Console.WriteLine("\t\t" + DeleteFiles(ArgQueryOutputDir) + " file(s) deleted.");

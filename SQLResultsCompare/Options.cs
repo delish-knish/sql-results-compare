@@ -25,7 +25,7 @@ namespace InfoCo.Sql.Test.SqlResultsCompare
         [Option('l', "compswitch", HelpText = "Compare tool switches.")]
         public string CompareSwitches { get; set; }
 
-        [Option('d', DefaultValue = true, HelpText = "Delete existing output files.")]
+        [Option('d', DefaultValue = false, HelpText = "Delete existing output files.")]
         public bool DeleteExisting { get; set; }
 
         [Option('i', DefaultValue = false, HelpText = "Create the SqlResultsCompare database.")]
