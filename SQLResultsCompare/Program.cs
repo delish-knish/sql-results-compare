@@ -56,7 +56,7 @@ namespace InfoCo.Sql.Test.SqlResultsCompare
                         bool deploySuccess = DeployDatabase(serverName, dbConnString);
                         string deployMessage;
                         deployMessage = (deploySuccess == true ? "SqlResultsCompare database deployed successfully on " + serverName + "." : "SqlResultsCompare database deployment failed on " + serverName + ".");
-                        Console.WriteLine("SqlResultsCompare database deployed successfully to " + serverName + ".");
+                        Console.WriteLine(deployMessage);
                         return;
                     }
 
@@ -220,7 +220,10 @@ namespace InfoCo.Sql.Test.SqlResultsCompare
             catch (Exception ex)
             {
                 success = false;
-                MessageList.Add(ex.Message);
+                //TODO: add logging
+                //MessageList.Add(ex.Message);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException.ToString());
             }
             return success;
         }
